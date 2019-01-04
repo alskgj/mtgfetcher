@@ -1,4 +1,5 @@
 import requests
+from functools import lru_cache
 
 API = "https://api.scryfall.com/cards/search"
 
@@ -17,19 +18,21 @@ def most_relevant(data):
     return data[0]
 
 
+@lru_cache(2048)
 def get_all(query):
-    """Takes a query and returns all relevant datapoints"""
+    """Takes a query and returns the first 10 relevant datapoints"""
     data = search(query)
     if not data:
         return []
     result = []
-    for element in data:
+    for element in data[:10]:
         card = {}
         # todo both card faces
         if 'image_uris' not in element:
             element = element['card_faces'][0]
 
         card['png'] = element['image_uris']['png']
+        card['thumbnail'] = element['image_uris']['small']
         card['name'] = element['name']
         result.append(card)
     return result
@@ -43,5 +46,4 @@ def get_image(query):
         return None
     return most_relevant(data)['image_uris']['png']
 
-
-print(get_all('nicol bolas'))
+print(get_all('llanowar'))
