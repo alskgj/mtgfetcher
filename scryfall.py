@@ -1,16 +1,7 @@
 import requests
 from functools import lru_cache
+import cache
 
-API = "https://api.scryfall.com/cards/search"
-
-
-def search(query):
-    """This returns a list of all matching cards. Can be an empty list."""
-    response = requests.get(API, params={'q': query}).json()
-    if response['object'] == 'error':
-        return []
-    else:
-        return response['data']
 
 
 def most_relevant(data):
@@ -21,7 +12,7 @@ def most_relevant(data):
 @lru_cache(2048)
 def get_all(query):
     """Takes a query and returns the first 10 relevant datapoints"""
-    data = search(query)
+    data = cache.get(query)
     if not data:
         return []
     result = []
@@ -41,9 +32,7 @@ def get_all(query):
 def get_image(query):
     """Takes a query and returns an uri
     to the most relevant magic card"""
-    data = search(query)
+    data = cache.get(query)
     if not data:
         return None
     return most_relevant(data)['image_uris']['png']
-
-print(get_all('llanowar'))
