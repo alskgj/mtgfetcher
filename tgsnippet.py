@@ -18,9 +18,9 @@ def inline_caps(bot, update):
     results = list()
     results.append(
         InlineQueryResultArticle(
-            id=query.upper(),
-            title='Caps',
-            input_message_content=InputTextMessageContent(query.upper())
+            id=query,
+            title='Search Result',
+            input_message_content=InputTextMessageContent(get_image(query))
         )
     )
     bot.answer_inline_query(update.inline_query.id, results)
@@ -36,14 +36,13 @@ def search(bot, update):
     image = get_image(update.message.text)
     bot.send_message(chat_id=update.message.chat_id, text=image)
 
-updater = Updater(token=TOKEN)
 
+updater = Updater(token=TOKEN)
 dispatcher = updater.dispatcher
 
 search_handler = MessageHandler(Filters.text, search)
-
-
-dispatcher.add_handler(search_handler)
-
 inline_caps_handler = InlineQueryHandler(inline_caps)
+dispatcher.add_handler(search_handler)
 dispatcher.add_handler(inline_caps_handler)
+
+updater.start_polling()
