@@ -27,9 +27,24 @@ def get(query):
         return store(query)
 
 
+def trim(searchresults):
+    """Takes a list of cards from scryfall and trims most data to make caching a bit better"""
+    result = []
+
+    for element in searchresults:
+        card = {}
+        if 'image_uris' not in element:
+            element = element['card_faces'][0]
+        card['image_uris'] = element['image_uris']
+        card['name'] = element['name']
+        card['id'] = element['id']
+        result.append(card)
+    return result
+
+
 def store(query):
     """Search query on scryfall, update db and return result"""
-    result = search(query)
+    result = trim(search(query))
 
     if exists(PATH):
         data = loads(open(PATH, 'r').read())

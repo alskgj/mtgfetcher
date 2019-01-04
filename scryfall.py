@@ -1,7 +1,4 @@
-import requests
-from functools import lru_cache
 import cache
-
 
 
 def most_relevant(data):
@@ -9,14 +6,13 @@ def most_relevant(data):
     return data[0]
 
 
-@lru_cache(2048)
 def get_all(query):
     """Takes a query and returns the first 10 relevant datapoints"""
     data = cache.get(query)
     if not data:
         return []
     result = []
-    for element in data[:10]:
+    for element in data:
         card = {}
         # todo both card faces
         if 'image_uris' not in element:
@@ -25,6 +21,7 @@ def get_all(query):
         card['png'] = element['image_uris']['png']
         card['thumbnail'] = element['image_uris']['small']
         card['name'] = element['name']
+        card['id'] = element['id']
         result.append(card)
     return result
 
