@@ -33,11 +33,11 @@ def trim(searchresults):
 
     for element in searchresults:
         card = {}
+        card['id'] = element['id']
         if 'image_uris' not in element:
             element = element['card_faces'][0]
-        card['image_uris'] = element['image_uris']
+        card['image_uris'] = {'small': element['image_uris']['small'], 'png': element['image_uris']['png']}
         card['name'] = element['name']
-        card['id'] = element['id']
         result.append(card)
     return result
 

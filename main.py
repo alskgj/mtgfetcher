@@ -16,7 +16,7 @@ TOKEN = config['auth']['telegram_token']
 
 def inline_article(bot, update):
     query = update.inline_query.query
-    if not query:
+    if not query or len(query) < 3:
         return
     data = get_all(query)
     results = list()
